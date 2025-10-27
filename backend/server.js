@@ -26,9 +26,32 @@ async function initDB() {
 
 const app = express();
 
-app.get("/", (req, res) => {
-  res.send("It is working fine...");
-});
+app.use(express.json());
+
+
+// app.get("/", (req, res) => {
+//   res.send("It is working fine...");
+// });
+
+app.post("/api/transaction",async(req,res)=>{
+  try {
+    const {title,amount,category,user_id}=req.body;
+
+    if(!title || amount===undefined || !category || !user_id){
+      return res.status(400).json({
+        message:"All fields are required"
+      })
+    }
+
+    const transaction=await sql`INSERT INTO transactions(user_id,title,amount,category) VALUES (${user_id},${title},${amount},${category}) RETURNING *`
+
+    console.log(transaction);
+    res.status(201).json(transaction[0]);
+  } catch (error) {
+    console.log("Error creating the transaction",error);
+    res.status(500).json({message:"Internal Server Error"});
+  }
+})
 
 initDB().then(() => {
   app.listen(PORT, () => {
