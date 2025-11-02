@@ -1,38 +1,6 @@
-import express from "express";
-import dotenv from "dotenv";
-import { sql } from "./config/db.js";
+import { sql } from "../config/db.js";
 
-dotenv.config();
-
-const PORT = process.env.PORT || 5001;
-
-async function initDB() {
-  try {
-    await sql`CREATE TABLE IF NOT EXISTS transactions(
-        id SERIAL PRIMARY KEY,
-        user_id VARCHAR(255) NOT NULL,
-        title VARCHAR(255) NOT NULL,
-        amount DECIMAL(10,2) NOT NULL,
-        category VARCHAR(255) NOT NULL,
-        created_at DATE NOT NULL DEFAULT CURRENT_DATE
-        )`;
-
-    console.log("Database initialized successfully");
-  } catch (error) {
-    console.log("Error initializing DB", error);
-    process.exit(1); // status code 1 means failure , 0 means success
-  }
-}
-
-const app = express();
-
-app.use(express.json());
-
-// app.get("/", (req, res) => {
-//   res.send("It is working fine...");
-// });
-
-app.get("/api/transactions/:userId", async (req, res) => {
+export async function getTransactionsByUserId(req, res) {
   try {
     const { userId } = req.params;
     if (!userId) {
@@ -51,9 +19,9 @@ app.get("/api/transactions/:userId", async (req, res) => {
     console.log("Error fetching the transactions", error);
     res.status(500).json({ message: "Internal Server Error" });
   }
-});
+}
 
-app.delete("/api/delete/:id", async (req, res) => {
+export async function deleteTransaction(req, res) {
   try {
     const { id } = req.params;
     if (!id) {
@@ -85,9 +53,9 @@ app.delete("/api/delete/:id", async (req, res) => {
       message: "Internal Server Error",
     });
   }
-});
+}
 
-app.post("/api/transaction", async (req, res) => {
+export async function createTransaction(req, res) {
   try {
     const { title, amount, category, user_id } = req.body;
 
@@ -106,34 +74,27 @@ app.post("/api/transaction", async (req, res) => {
     console.log("Error creating the transaction", error);
     res.status(500).json({ success: false, message: "Internal Server Error" });
   }
-});
+}
 
-app.get("/api/transactions/summary/:userId",async(req,res)=>{
+export async function transactionSummary(req, res) {
   try {
-    const {userId}=req.params;
+    const { userId } = req.params;
     const balanceResult = await sql`
-    SELECT COALESCE(SUM(amount),0) as balance FROM transactions where user_id = ${userId}
-    `
+        SELECT COALESCE(SUM(amount),0) as balance FROM transactions where user_id = ${userId}
+        `;
 
     const incomeResult = await sql`
-    SELECT COALESCE(SUM(amount),0) as income FROM transactions WHERE user_id=${userId} and amount>0`
+        SELECT COALESCE(SUM(amount),0) as income FROM transactions WHERE user_id=${userId} and amount>0`;
     const expenseResult = await sql`
-    SELECT COALESCE(SUM(amount),0) as expenses FROM transactions WHERE user_id=${userId} and amount<0`
+        SELECT COALESCE(SUM(amount),0) as expenses FROM transactions WHERE user_id=${userId} and amount<0`;
 
     res.status(200).json({
-      balance:balanceResult[0].balance,
-      income:incomeResult[0].income,
-      expenses:expenseResult[0].expenses,
-    })
-
+      balance: balanceResult[0].balance,
+      income: incomeResult[0].income,
+      expenses: expenseResult[0].expenses,
+    });
   } catch (error) {
-     console.log("Error fetching the summary", error);
+    console.log("Error fetching the summary", error);
     res.status(500).json({ success: false, message: "Internal Server Error" });
   }
-})
-
-initDB().then(() => {
-  app.listen(PORT, () => {
-    console.log(`Server is running on port : ${PORT}`);
-  });
-});
+}
