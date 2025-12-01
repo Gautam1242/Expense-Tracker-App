@@ -36,9 +36,12 @@ export default function SignUpScreen() {
       // and capture OTP code
       setPendingVerification(true);
     } catch (err) {
-      // See https://clerk.com/docs/custom-flows/error-handling
-      // for more info on error handling
-      console.error(JSON.stringify(err, null, 2));
+      if(err.errors?.[0]?.code){
+        setError(err.errors?.[0]?.message||err.errors?.[0]?.longMessage)
+      }
+      else{
+        setError(err)
+      }
     }
   };
 
@@ -63,9 +66,12 @@ export default function SignUpScreen() {
         console.error(JSON.stringify(signUpAttempt, null, 2));
       }
     } catch (err) {
-      // See https://clerk.com/docs/custom-flows/error-handling
-      // for more info on error handling
-      console.error(JSON.stringify(err, null, 2));
+      if(err.errors?.[0]?.code){
+        setError(err.errors?.[0]?.message||err.errors?.[0]?.longMessage)
+      }
+      else{
+        setError(err)
+      }
     }
   };
 
@@ -98,7 +104,7 @@ export default function SignUpScreen() {
   }
 
   return (
-    <KeyboardAwareScrollView style={{ flex: 1}} contentContainerStyle={{flexGrow:1}} enableOnAndroid={true} enableAutomaticScroll={true} extraHeight={100}>
+    <KeyboardAwareScrollView style={{ flex: 1}} contentContainerStyle={{flexGrow:1}} enableOnAndroid={true} enableAutomaticScroll={true} extraHeight={30}>
       <View style={styles.container}>
         <Image
           source={require("../../assets/images/revenue-i2.png")}
@@ -125,7 +131,7 @@ export default function SignUpScreen() {
           onChangeText={(email) => setEmailAddress(email)}
         />
         <TextInput
-        style={[styles.verificationInput, error && styles.errorInput]}
+        style={[styles.input, error && styles.errorInput]}
           placeholderTextColor="#9A8478"
           value={password}
           placeholder="Enter password"
