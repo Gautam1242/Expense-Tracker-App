@@ -1,8 +1,9 @@
 import { useCallback, useState } from "react";
 import axios from "axios";
 import { Alert } from "react-native";
+import { API_URL } from "../constants/api";
 
-const API_URL = "https://expense-tracker-app-fo42.onrender.com/api";
+
 
 export const useTransactions = (userId) => {
   const [transactions, setTransactions] = useState([]);
