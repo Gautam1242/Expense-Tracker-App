@@ -52,7 +52,7 @@ const CreateScreen = () => {
         ? -Math.abs(parseFloat(amount))
         : Math.abs(parseFloat(amount));
 
-      const response = await fetch(`${API_URL}/transactions`, {
+      const response = await fetch(`${API_URL}/transaction`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -136,7 +136,7 @@ const CreateScreen = () => {
 
         {/* AMOUNT CONTAINER */}
         <View style={styles.amountContainer}>
-          <Text style={styles.currencySymbol}>$</Text>
+          <Text style={styles.currencySymbol}>₹</Text>
           <TextInput
             style={styles.amountInput}
             placeholder="0.00"
