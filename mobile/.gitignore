@@ -41,3 +41,7 @@ app-example
 # generated native folders
 /ios
 /android
+
+# secrets
+fcmtestapp-5bf64-firebase-adminsdk-fbsvc-24f3ba4839.json
+google-services.json
