@@ -82,7 +82,7 @@ export default function Page() {
               style={{ marginRight: 15, position: 'relative' }}
               onPress={() => router.push("/notifications")}
             >
-              <Ionicons name="notifications-outline" size={24} color="#fff" />
+              <Ionicons name="notifications-outline" size={24} color="#000" />
               {unreadCount > 0 && (
                 <View style={{
                   position: 'absolute',

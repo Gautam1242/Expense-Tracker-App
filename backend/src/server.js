@@ -3,6 +3,7 @@ import dotenv from "dotenv";
 import rateLimiter from "./middleware/rateLimiter.js";
 import transactionRoute from "./routes/transactionsRoute.js";
 import notificationRoute from "./routes/notificationRoute.js";
+import userRoute from "./routes/userRoute.js";
 import { initDB } from "./config/db.js";
 import job from "./config/cron.js";
 
@@ -24,6 +25,7 @@ app.get("/api/health", (req, res) => {
 
 app.use("/api", transactionRoute);
 app.use("/api", notificationRoute);
+app.use("/api", userRoute);
 
 initDB().then(() => {
   app.listen(PORT, () => {

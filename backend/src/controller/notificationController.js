@@ -1,4 +1,5 @@
 import { sql } from "../config/db.js";
+import { sendPushNotification } from "../services/pushService.js";
 
 export const getUserNotifications = async (req, res) => {
     try {
@@ -22,6 +23,9 @@ export const getUserNotifications = async (req, res) => {
         INSERT INTO notifications (user_id, message, type) 
         VALUES (${userId}, ${greeting}, 'greeting')
       `;
+
+            // SEND PUSH NOTIFICATION
+            await sendPushNotification(userId, "Daily Greeting", greeting);
         }
 
         const notifications = await sql`

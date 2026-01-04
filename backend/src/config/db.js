@@ -25,6 +25,12 @@ export async function initDB() {
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
     )`;
 
+    await sql`CREATE TABLE IF NOT EXISTS user_push_tokens(
+        user_id VARCHAR(255) PRIMARY KEY,
+        token TEXT NOT NULL,
+        updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    )`;
+
     console.log("Database initialized successfully");
   } catch (error) {
     console.log("Error initializing DB", error);

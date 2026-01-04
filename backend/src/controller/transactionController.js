@@ -1,4 +1,5 @@
 import { sql } from "../config/db.js";
+import { sendPushNotification } from "../services/pushService.js";
 
 export async function getTransactionsByUserId(req, res) {
   try {
@@ -73,6 +74,9 @@ export async function createTransaction(req, res) {
       INSERT INTO notifications (user_id, message, type) 
       VALUES (${user_id}, 'You have created a new transaction', 'transaction')
     `;
+
+    // SEND PUSH NOTIFICATION
+    await sendPushNotification(user_id, "New Transaction", "You have created a new transaction");
 
     console.log(transaction);
     res.status(201).json(transaction[0]);
