@@ -18,9 +18,11 @@ export const useTransactions = (userId) => {
   // useCallback is used for performance reasons , it will memoize the function
   const fetchTransactions = useCallback(async () => {
     try {
+      console.log("Fetching transactions for user : ", userId);
       const response = await axios.get(`${API_URL}/transactions/${userId}`);
       if (response.data.success) {
-        setTransactions(response.data.data);
+        setTransactions(response.data.transactions);
+        console.log("Transactions : ", response);
       }
     } catch (error) {
       console.log("Error while fetching the transactions : ", error);
@@ -32,9 +34,9 @@ export const useTransactions = (userId) => {
       const response = await axios.get(
         `${API_URL}/transactions/summary/${userId}`
       );
-      if (response.data.success) {
-        setSummary(response.data.data);
-      }
+      // Backend returns the summary object directly
+      setSummary(response.data);
+      console.log("Summary Response: ", response.data);
     } catch (error) {
       console.log("Error while fetching the transactions : ", error);
     }
@@ -61,7 +63,7 @@ export const useTransactions = (userId) => {
   const deleteTransaction = async (id) => {
     try {
       const response = await axios.delete(`${API_URL}/delete/${id}`);
-      if (response.data.success) {
+      if (response.status === 200) {
         Alert.alert("Success", "Transaction deleted successfully");
         loadData();
       }

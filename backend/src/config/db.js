@@ -1,9 +1,9 @@
-import {neon} from "@neondatabase/serverless"
+import { neon } from "@neondatabase/serverless"
 
 import "dotenv/config"
 
 // Create a SQL connection using our DB URL
-export const sql=neon(process.env.DATABASE_URL)
+export const sql = neon(process.env.DATABASE_URL)
 
 export async function initDB() {
   try {
@@ -15,6 +15,15 @@ export async function initDB() {
         category VARCHAR(255) NOT NULL,
         created_at DATE NOT NULL DEFAULT CURRENT_DATE
         )`;
+
+    await sql`CREATE TABLE IF NOT EXISTS notifications(
+        id SERIAL PRIMARY KEY,
+        user_id VARCHAR(255) NOT NULL,
+        message TEXT NOT NULL,
+        type VARCHAR(50) DEFAULT 'info',
+        is_read BOOLEAN DEFAULT FALSE,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    )`;
 
     console.log("Database initialized successfully");
   } catch (error) {

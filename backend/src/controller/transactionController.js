@@ -68,6 +68,12 @@ export async function createTransaction(req, res) {
     const transaction =
       await sql`INSERT INTO transactions(user_id,title,amount,category) VALUES (${user_id},${title},${amount},${category}) RETURNING *`;
 
+    // Create notification
+    await sql`
+      INSERT INTO notifications (user_id, message, type) 
+      VALUES (${user_id}, 'You have created a new transaction', 'transaction')
+    `;
+
     console.log(transaction);
     res.status(201).json(transaction[0]);
   } catch (error) {

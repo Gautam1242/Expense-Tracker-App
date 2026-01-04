@@ -10,6 +10,7 @@ import {
   Image,
 } from "react-native";
 import { SignOutButton } from "../../components/SignOutButton";
+import { useNotifications } from "../../hooks/useNotifications";
 import { useTransactions } from "../../hooks/useTransactions";
 import { useEffect, useState } from "react";
 import PageLoader from "../../components/PageLoader";
@@ -24,6 +25,7 @@ export default function Page() {
   const router = useRouter();
   const { transactions, summary, loading, loadData, deleteTransaction } =
     useTransactions(user.id);
+  const { unreadCount } = useNotifications(user.id);
 
   const [refreshing, setRefreshing] = useState(false);
 
@@ -76,6 +78,28 @@ export default function Page() {
           </View>
           {/* Right */}
           <View style={styles.headerRight}>
+            <TouchableOpacity
+              style={{ marginRight: 15, position: 'relative' }}
+              onPress={() => router.push("/notifications")}
+            >
+              <Ionicons name="notifications-outline" size={24} color="#fff" />
+              {unreadCount > 0 && (
+                <View style={{
+                  position: 'absolute',
+                  top: -5,
+                  right: -5,
+                  backgroundColor: 'red',
+                  width: 16,
+                  height: 16,
+                  borderRadius: 8,
+                  justifyContent: 'center',
+                  alignItems: 'center'
+                }}>
+                  <Text style={{ color: '#fff', fontSize: 10, fontWeight: 'bold' }}>{unreadCount}</Text>
+                </View>
+              )}
+            </TouchableOpacity>
+
             <TouchableOpacity
               style={styles.addButton}
               onPress={() => router.push("/create")}
